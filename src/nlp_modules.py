@@ -1,52 +1,63 @@
 import google.generativeai as genai
 import os
-
-class nlp_module:
-    with open(os.path.abspath(r'src\google_gemini_api_key.txt'),'r') as f:
+import time
+class NLPModels:
+    with open(r'D:\git_Repositories\oop_project_NLP_app\src\google_gemini_api_key.txt','r') as f:
         
         gemini_api_key = f.readline().strip()
     
     def __init__(self) -> None:
-        self.__model = self.__ConnectGemini__() 
+        
         print('this is NLP Module class')
-    
-    def __ConnectGemini__(self, module= 'gemini-pro'):
-        genai.configure(api_key=nlp_module.gemini_api_key)
-        model = genai.GenerativeModel(model_name=module)
-        return model
-    
-    def gemini_formatter(func):
-        def wrapper(self, *args, **kwargs):
-            model = self.__model
-            prompt = func(self, *args, **kwargs)
-            response = model.generate_content(prompt)
-            try:
-                print(response.text)
-                return response.text
-            except:
-                return None
-        return wrapper
       
-    @gemini_formatter  
-    def centimental_analysis(self,text=None):
+    def __Connect_gemini(self,module= 'gemini-pro'):
+            genai.configure(api_key=NLPModels.gemini_api_key)
+            model = genai.GenerativeModel(model_name=module)
+            return model
+    
+    def centimental_analysis(self):
+        text = input('Enter text to centimental analysis\n')
         string = f'Give me centimental analysis : "{text}"'
-        return string
-    @gemini_formatter  
-    def translator(self,text=None,converting_lang = 'english'):
+        model = self.__Connect_gemini()
+        responce =  model.generate_content(string,)
+        time.sleep(5)
+        try:
+            return responce.text
+        except:
+            return None
+        
+     
+    def translator(self):
+        text = input('Enter text to translate\n')
+        converting_lang = input('\nEnter language name to convert\n')
         string = f'translate the text to {converting_lang} : "{text}"'
-        return string
-    @gemini_formatter  
-    def language_detection(self,text=None):
+        model = self.__Connect_gemini()
+        responce = model.generate_content(string)
+        try:
+            return responce.text
+        except:
+            return None
+ 
+    def language_detection(self):
+        text = input('Enter text to detecte the language\n')
         string = f'detecte the language : "{text}"'
-        return string
+        model = self.__Connect_gemini()
+        responce = model.generate_content(string)
+        try:
+            return responce.text
+        except:
+            return None
     
     
     
 
 if __name__=="__main__":
-    p1 = nlp_module()
+    p1 = NLPModels()
     s = 'i love you'
-    p1.centimental_analysis(text=s)
-    p1.language_detection(s)
-    p1.translator(s,converting_lang='hindi')
+    res = p1.centimental_analysis()
+    print(res)
+    res1 = p1.language_detection()
+    print(res1)
+    res2 = p1.translator()
+    print(res2)
     
